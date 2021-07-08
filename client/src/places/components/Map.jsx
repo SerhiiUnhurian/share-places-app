@@ -2,8 +2,6 @@ import { Box, CircularProgress, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
 
-const API_KEY = 'AIzaSyB-cexG4d7CFlCUXuM32t8ppjDH5QEtjhM';
-
 const useStyles = makeStyles({
   map: {
     height: '50vh',
@@ -13,7 +11,7 @@ const useStyles = makeStyles({
 const Map = ({ center, zoom }) => {
   const classes = useStyles();
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: API_KEY,
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
   });
 
   if (loadError) {

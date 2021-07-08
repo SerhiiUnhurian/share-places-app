@@ -62,7 +62,7 @@ const PlaceItem = props => {
         open={isMapOpen}
         onClose={handleMapClose}
         center={coordinates}
-        zoom={16}
+        zoom={8}
       />
     </>
   );

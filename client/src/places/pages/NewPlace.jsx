@@ -1,5 +1,12 @@
+import { Container } from '@material-ui/core';
+import AddPlaceFrom from '../components/AddPlaceForm';
+
 const NewPlace = () => {
-  return <h2>New Place</h2>;
+  return (
+    <Container maxWidth="xs">
+      <AddPlaceFrom />
+    </Container>
+  );
 };
 
 export default NewPlace;
