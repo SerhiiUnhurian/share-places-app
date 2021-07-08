@@ -1,10 +1,4 @@
-import {
-  IconButton,
-  Link,
-  Menu,
-  MenuItem,
-  Typography,
-} from '@material-ui/core';
+import { IconButton, Link, Menu, MenuItem } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -97,7 +91,7 @@ const Navigation = () => {
           </Menu>
         </div>
       ) : (
-        <Typography className={classes.navLinks}>
+        <nav className={classes.navLinks}>
           <Link
             exact
             to="/"
@@ -138,7 +132,7 @@ const Navigation = () => {
           >
             Authenticate
           </Link>
-        </Typography>
+        </nav>
       )}
     </>
   );
