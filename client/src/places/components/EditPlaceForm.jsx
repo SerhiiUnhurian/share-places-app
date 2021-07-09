@@ -3,28 +3,18 @@ import {
   Button,
   Grid,
   LinearProgress,
-  Paper,
   Typography,
+  Paper
 } from '@material-ui/core';
-import AddLocationIcon from '@material-ui/icons/AddLocation';
+import EditLocationIcon from '@material-ui/icons/EditLocation';
 import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-material-ui';
 import { useStyles } from './placeFormStyles';
 
-const INITIAL_FORM_VALUES = {
-  title: '',
-  address: '',
-  description: '',
-};
-
 const FORM_INPUTS = [
   {
     name: 'title',
-    label: 'Title *',
-  },
-  {
-    name: 'address',
-    label: 'Address *',
+    label: 'Title',
   },
   {
     name: 'description',
@@ -36,7 +26,6 @@ const FORM_INPUTS = [
 const validateForm = values => {
   const errors = {};
   const title = values.title.trim();
-  const address = values.address.trim();
 
   if (!title) {
     errors.title = 'Required';
@@ -44,27 +33,27 @@ const validateForm = values => {
     errors.title = 'Title should be more than 3 characters long.';
   }
 
-  if (!address) {
-    errors.address = 'Required';
-  } else if (address.length < 5) {
-    errors.address = 'Address should be more than 5 characters long.';
-  }
   return errors;
 };
 
-const AddPlaceForm = () => {
+const EditPlaceForm = ({ place }) => {
   const classes = useStyles();
+
+  const initialFormValues = {
+    title: place.title,
+    description: place.description,
+  };
 
   return (
     <Paper className={classes.paper}>
       <Avatar className={classes.avatar}>
-        <AddLocationIcon fontSize="large" />
+        <EditLocationIcon fontSize="large" />
       </Avatar>
       <Typography component="h1" variant="h5">
-        Add place
+        Edit place
       </Typography>
       <Formik
-        initialValues={INITIAL_FORM_VALUES}
+        initialValues={initialFormValues}
         validate={validateForm}
         onSubmit={(values, { setSubmitting }) => {
           setTimeout(() => {
@@ -84,6 +73,8 @@ const AddPlaceForm = () => {
                     type="text"
                     name={name}
                     label={label}
+                    defaultValue={place[name]}
+                    InputProps={{ notched: true }}
                     multiline={!!multiline}
                     rows={multiline && 4}
                     fullWidth
@@ -98,7 +89,7 @@ const AddPlaceForm = () => {
                   disabled={isSubmitting}
                   onClick={submitForm}
                 >
-                  Add place
+                  Save
                 </Button>
               </Grid>
             </Grid>
@@ -109,4 +100,4 @@ const AddPlaceForm = () => {
   );
 };
 
-export default AddPlaceForm;
+export default EditPlaceForm;

@@ -3,7 +3,7 @@ import AddPlaceFrom from '../components/AddPlaceForm';
 
 const NewPlace = () => {
   return (
-    <Container maxWidth="xs">
+    <Container maxWidth="sm">
       <AddPlaceFrom />
     </Container>
   );

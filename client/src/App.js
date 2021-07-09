@@ -1,5 +1,6 @@
 import { CssBaseline } from '@material-ui/core';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import EditPlace from './places/pages/EditPlace';
 import NewPlace from './places/pages/NewPlace';
 import UserPlaces from './places/pages/UserPlaces';
 import Header from './shared/components/Header';
@@ -21,6 +22,9 @@ function App() {
             </Route>
             <Route exact path="/places/new">
               <NewPlace />
+            </Route>
+            <Route exact path="/places/:placeId">
+              <EditPlace />
             </Route>
             <Redirect to="/" />
           </Switch>
