@@ -1,9 +1,10 @@
-import { IconButton, Link, Menu, MenuItem } from '@material-ui/core';
+import { Button, IconButton, Menu, MenuItem } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import MenuIcon from '@material-ui/icons/Menu';
 import { useState } from 'react';
-import { NavLink, Route, Switch } from 'react-router-dom';
+import { NavLink, Route } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const useStyles = makeStyles(theme => ({
   navLinks: {
@@ -11,41 +12,43 @@ const useStyles = makeStyles(theme => ({
       marginLeft: theme.spacing(2),
     },
     '& > .active, & > :hover': {
-      color: theme.palette.secondary.main,
+      backgroundColor: theme.palette.primary.dark,
       transitionDuration: theme.transitions.duration.shorter,
     },
   },
 }));
 
-const MenuItemLink = props => {
+function MenuItemLink(props) {
   return (
-    <Switch>
-      <Route
-        exact
-        path={props.to}
-        render={() => <MenuItem selected component={NavLink} {...props} />}
-      />
-      <Route
-        path="/"
-        render={() => <MenuItem component={NavLink} {...props} />}
-      />
-    </Switch>
+    <Route
+      exact
+      path={props.to}
+      children={({ match }) => (
+        <MenuItem selected={match} component={NavLink} {...props} />
+      )}
+    />
   );
-};
+}
 
 const Navigation = () => {
   const classes = useStyles();
+  const { currentUser, logout } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const handleMenu = event => {
+  const handleMenuOpen = event => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    handleMenuClose();
+    logout();
   };
 
   return (
@@ -56,7 +59,7 @@ const Navigation = () => {
             aria-label="account of current user"
             aria-controls="menu-appbar"
             aria-haspopup="true"
-            onClick={handleMenu}
+            onClick={handleMenuOpen}
             color="inherit"
           >
             <MenuIcon />
@@ -74,64 +77,67 @@ const Navigation = () => {
               horizontal: 'right',
             }}
             open={open}
-            onClose={handleClose}
+            onClose={handleMenuClose}
           >
-            <MenuItemLink to="/" onClick={handleClose}>
+            <MenuItemLink to="/" onClick={handleMenuClose}>
               All users
             </MenuItemLink>
-            <MenuItemLink to="/uid/places" onClick={handleClose}>
-              My places
-            </MenuItemLink>
-            <MenuItemLink to="/places/new" onClick={handleClose}>
-              Add place
-            </MenuItemLink>
-            <MenuItemLink to="/auth" onClick={handleClose}>
-              Authenticate
-            </MenuItemLink>
+            {currentUser && (
+              <MenuItemLink to="/uid/places" onClick={handleMenuClose}>
+                My places
+              </MenuItemLink>
+            )}
+            {currentUser && (
+              <MenuItemLink to="/places/new" onClick={handleMenuClose}>
+                Add place
+              </MenuItemLink>
+            )}
+            {!currentUser ? (
+              <MenuItemLink to="/login" onClick={handleMenuClose}>
+                Login
+              </MenuItemLink>
+            ) : (
+              <MenuItemLink to="/login" onClick={handleLogout}>
+                Logout
+              </MenuItemLink>
+            )}
           </Menu>
         </div>
       ) : (
         <nav className={classes.navLinks}>
-          <Link
-            exact
-            to="/"
-            component={NavLink}
-            variant="h6"
-            color="inherit"
-            underline="none"
-          >
+          <Button exact to="/" component={NavLink} color="inherit">
             All users
-          </Link>
-          <Link
-            exact
-            to="/uid/places"
-            component={NavLink}
-            variant="h6"
-            color="inherit"
-            underline="none"
-          >
-            My places
-          </Link>
-          <Link
-            exact
-            to="/places/new"
-            component={NavLink}
-            variant="h6"
-            color="inherit"
-            underline="none"
-          >
-            Add place
-          </Link>
-          <Link
-            exact
-            to="/auth"
-            component={NavLink}
-            variant="h6"
-            color="inherit"
-            underline="none"
-          >
-            Authenticate
-          </Link>
+          </Button>
+          {currentUser && (
+            <>
+              <Button exact to="/1/places" component={NavLink} color="inherit">
+                My places
+              </Button>
+              <Button
+                exact
+                to="/places/new"
+                component={NavLink}
+                color="inherit"
+              >
+                Add place
+              </Button>
+            </>
+          )}
+          {!currentUser ? (
+            <Button exact to="/login" component={NavLink} color="inherit">
+              Login
+            </Button>
+          ) : (
+            <Button
+              exact
+              to="/login"
+              component={NavLink}
+              color="inherit"
+              onClick={handleLogout}
+            >
+              Logout
+            </Button>
+          )}
         </nav>
       )}
     </>

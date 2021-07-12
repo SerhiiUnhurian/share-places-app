@@ -1,14 +1,9 @@
-import {
-  Avatar,
-  Button,
-  Grid,
-  LinearProgress,
-  Typography,
-  Paper
-} from '@material-ui/core';
+import { Avatar, Button, Grid, Paper, Typography } from '@material-ui/core';
 import EditLocationIcon from '@material-ui/icons/EditLocation';
 import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-material-ui';
+import { useHistory } from 'react-router-dom';
+import Loading from '../../shared/components/Loading';
 import { useStyles } from './placeFormStyles';
 
 const FORM_INPUTS = [
@@ -38,6 +33,18 @@ const validateForm = values => {
 
 const EditPlaceForm = ({ place }) => {
   const classes = useStyles();
+  const history = useHistory();
+
+  const handleUpdatePlace = (values, { setSubmitting }) => {
+    setTimeout(() => {
+      setSubmitting(false);
+      alert(JSON.stringify(values, null, 2));
+    }, 500);
+  };
+
+  const handleCancel = () => {
+    history.goBack();
+  };
 
   const initialFormValues = {
     title: place.title,
@@ -55,12 +62,7 @@ const EditPlaceForm = ({ place }) => {
       <Formik
         initialValues={initialFormValues}
         validate={validateForm}
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            setSubmitting(false);
-            alert(JSON.stringify(values, null, 2));
-          }, 500);
-        }}
+        onSubmit={handleUpdatePlace}
       >
         {({ submitForm, isSubmitting }) => (
           <Form className={classes.form}>
@@ -81,18 +83,30 @@ const EditPlaceForm = ({ place }) => {
                   />
                 </Grid>
               ))}
-              {isSubmitting && <LinearProgress />}
-              <Grid item className={classes.submit}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  disabled={isSubmitting}
-                  onClick={submitForm}
-                >
-                  Save
-                </Button>
+              <Grid container item justify="center" spacing={1}>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={isSubmitting}
+                    onClick={submitForm}
+                  >
+                    Save
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    color="primary"
+                    disabled={isSubmitting}
+                    onClick={handleCancel}
+                    variant="outlined"
+                  >
+                    Cancel
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
+            <Loading open={isSubmitting} />
           </Form>
         )}
       </Formik>

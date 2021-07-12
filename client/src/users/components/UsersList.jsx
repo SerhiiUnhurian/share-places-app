@@ -7,7 +7,7 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
-    margin: 'auto',
+    margin: theme.spacing(2, 'auto'),
   },
 }));
 
@@ -17,7 +17,7 @@ const UserList = ({ items }) => {
   if (items.length === 0) {
     return (
       <Typography variant="subtitle1" align="center">
-        No users found.
+        No users to display.
       </Typography>
     );
   }

@@ -10,6 +10,8 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { useAuth } from '../../shared/context/AuthContext';
+import DeletePlaceDialog from './DeletePlaceDialog';
 import MapDialog from './MapDialog';
 
 const useStyles = makeStyles(theme => ({
@@ -22,14 +24,29 @@ const PlaceItem = props => {
   const { id, title, description, imageUrl, address, userId, coordinates } =
     props;
   const classes = useStyles();
-  const [isMapOpen, setIsMapOpen] = useState(false);
+  const [openMap, setOpenMap] = useState(false);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const { currentUser } = useAuth();
 
   const handleMapOpen = () => {
-    setIsMapOpen(true);
+    setOpenMap(true);
   };
 
   const handleMapClose = () => {
-    setIsMapOpen(false);
+    setOpenMap(false);
+  };
+
+  const handleConfirmModalOpen = () => {
+    setOpenConfirmModal(true);
+  };
+
+  const handleConfirmModalClose = () => {
+    setOpenConfirmModal(false);
+  };
+
+  const handleDeletePlace = () => {
+    setOpenConfirmModal(false);
+    console.log('PLACE DELETED');
   };
 
   return (
@@ -50,19 +67,34 @@ const PlaceItem = props => {
             <Button onClick={handleMapOpen} color="primary">
               View on Map
             </Button>
-            <Button to={`/places/${id}`} component={RouterLink} color="primary">
-              Edit
-            </Button>
-            <Button color="secondary">Delete</Button>
+            {currentUser && (
+              <>
+                <Button
+                  to={`/places/${id}`}
+                  component={RouterLink}
+                  color="primary"
+                >
+                  Edit
+                </Button>
+                <Button onClick={handleConfirmModalOpen} color="secondary">
+                  Delete
+                </Button>
+              </>
+            )}
           </CardActions>
         </Card>
       </Grid>
       <MapDialog
         title={address}
-        open={isMapOpen}
+        open={openMap}
         onClose={handleMapClose}
         center={coordinates}
         zoom={8}
+      />
+      <DeletePlaceDialog
+        open={openConfirmModal}
+        onClose={handleConfirmModalClose}
+        onConfirm={handleDeletePlace}
       />
     </>
   );

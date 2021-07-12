@@ -1,10 +1,10 @@
 import { Container } from '@material-ui/core';
-import AddPlaceFrom from '../components/AddPlaceForm';
+import AddPlaceForm from '../components/AddPlaceForm';
 
 const NewPlace = () => {
   return (
     <Container maxWidth="sm">
-      <AddPlaceFrom />
+      <AddPlaceForm />
     </Container>
   );
 };

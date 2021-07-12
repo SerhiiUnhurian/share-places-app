@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Container, Toolbar, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import PlaceIcon from '@material-ui/icons/Place';
 import Navigation from './Navigation';
@@ -14,13 +14,15 @@ const Header = () => {
 
   return (
     <AppBar position="relative">
-      <Toolbar>
-        <PlaceIcon fontSize="large" />
-        <Typography variant="h5" className={classes.brandname}>
-          SharePlace
-        </Typography>
-        <Navigation />
-      </Toolbar>
+      <Container maxWidth="lg">
+        <Toolbar>
+          <PlaceIcon fontSize="large" />
+          <Typography variant="h5" className={classes.brandname}>
+            SharePlace
+          </Typography>
+          <Navigation />
+        </Toolbar>
+      </Container>
     </AppBar>
   );
 };

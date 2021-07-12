@@ -17,7 +17,7 @@ export const useStyles = makeStyles(theme => ({
     width: '100%',
     marginTop: theme.spacing(4),
   },
-  submit: {
-    alignSelf: 'center',
+  links: {
+    marginTop: theme.spacing(2),
   },
 }));

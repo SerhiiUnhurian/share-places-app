@@ -1,4 +1,4 @@
-import { Container } from '@material-ui/core';
+import { Container, Typography } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import EditPlaceForm from '../components/EditPlaceForm';
 
@@ -76,7 +76,13 @@ const EditPlace = () => {
 
   return (
     <Container maxWidth="sm">
-      <EditPlaceForm place={foundPlace} />
+      {foundPlace ? (
+        <EditPlaceForm place={foundPlace} />
+      ) : (
+        <Typography variant="subtitle1" align="center">
+          Could not find the place.
+        </Typography>
+      )}
     </Container>
   );
 };

@@ -14,7 +14,7 @@ const PlaceList = ({ items }) => {
   if (items.length === 0) {
     return (
       <Typography variant="subtitle1" align="center">
-        No places found.
+        No places to display.
       </Typography>
     );
   }

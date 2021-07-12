@@ -1,14 +1,9 @@
-import {
-  Avatar,
-  Button,
-  Grid,
-  LinearProgress,
-  Paper,
-  Typography,
-} from '@material-ui/core';
+import { Avatar, Button, Grid, Paper, Typography } from '@material-ui/core';
 import AddLocationIcon from '@material-ui/icons/AddLocation';
 import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-material-ui';
+import { useHistory } from 'react-router-dom';
+import Loading from '../../shared/components/Loading';
 import { useStyles } from './placeFormStyles';
 
 const INITIAL_FORM_VALUES = {
@@ -54,6 +49,18 @@ const validateForm = values => {
 
 const AddPlaceForm = () => {
   const classes = useStyles();
+  const history = useHistory();
+
+  const handleAddPlace = (values, { setSubmitting }) => {
+    setTimeout(() => {
+      setSubmitting(false);
+      alert(JSON.stringify(values, null, 2));
+    }, 500);
+  };
+
+  const handleCancel = () => {
+    history.goBack();
+  };
 
   return (
     <Paper className={classes.paper}>
@@ -66,18 +73,13 @@ const AddPlaceForm = () => {
       <Formik
         initialValues={INITIAL_FORM_VALUES}
         validate={validateForm}
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            setSubmitting(false);
-            alert(JSON.stringify(values, null, 2));
-          }, 500);
-        }}
+        onSubmit={handleAddPlace}
       >
         {({ submitForm, isSubmitting }) => (
           <Form className={classes.form}>
-            <Grid container direction="column" spacing={3}>
+            <Grid container direction="column" spacing={3} alignItems="stretch">
               {FORM_INPUTS.map(({ name, label, multiline }) => (
-                <Grid item>
+                <Grid item key={name}>
                   <Field
                     component={TextField}
                     variant="outlined"
@@ -90,18 +92,30 @@ const AddPlaceForm = () => {
                   />
                 </Grid>
               ))}
-              {isSubmitting && <LinearProgress />}
-              <Grid item className={classes.submit}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  disabled={isSubmitting}
-                  onClick={submitForm}
-                >
-                  Add place
-                </Button>
+              <Grid container item justify="center" spacing={1}>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={isSubmitting}
+                    onClick={submitForm}
+                  >
+                    Add place
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    color="primary"
+                    disabled={isSubmitting}
+                    onClick={handleCancel}
+                    variant="outlined"
+                  >
+                    Cancel
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
+            <Loading open={isSubmitting} />
           </Form>
         )}
       </Formik>
