@@ -1,7 +1,9 @@
 import { CssBaseline } from '@material-ui/core';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import EditProfile from './Auth/pages/EditProfile';
 import Login from './Auth/pages/Login';
 import PasswordReset from './Auth/pages/PasswordReset';
+import Profile from './Auth/pages/Profile';
 import Registration from './Auth/pages/Registration';
 import EditPlace from './places/pages/EditPlace';
 import NewPlace from './places/pages/NewPlace';
@@ -20,12 +22,14 @@ function App() {
         <main>
           <Switch>
             <Route exact path="/" component={Users} />
-            <PrivateRoute exact path="/places/new" component={NewPlace} />
-            <PrivateRoute exact path="/places/:placeId" component={EditPlace} />
-            <Route exact path="/:userId/places" component={UserPlaces} />
+            <PrivateRoute path="/places/new" component={NewPlace} />
+            <PrivateRoute path="/places/:placeId" component={EditPlace} />
+            <Route path="/:userId/places" component={UserPlaces} />
             <Route path="/login" component={Login} />
             <Route path="/registration" component={Registration} />
             <Route path="/password-reset" component={PasswordReset} />
+            <PrivateRoute path="/profile" component={Profile} />
+            <PrivateRoute path="/edit-profile" component={EditProfile} />
             <Redirect to="/" />
           </Switch>
         </main>

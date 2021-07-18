@@ -17,6 +17,9 @@ export const useStyles = makeStyles(theme => ({
     width: '100%',
     marginTop: theme.spacing(4),
   },
+  title: {
+    marginBottom: theme.spacing(2),
+  },
   links: {
     marginTop: theme.spacing(2),
   },

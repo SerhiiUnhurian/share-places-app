@@ -7,8 +7,10 @@ import {
   Typography,
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Alert from '@material-ui/lab/Alert';
 import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-material-ui';
+import { useState } from 'react';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { useStyles } from '../../places/components/placeFormStyles';
 import Loading from '../../shared/components/Loading';
@@ -23,10 +25,12 @@ const FORM_INPUTS = [
   {
     name: 'email',
     label: 'Email *',
+    type: 'email',
   },
   {
     name: 'password',
     label: 'Password *',
+    type: 'password',
   },
 ];
 
@@ -43,8 +47,8 @@ const validateForm = values => {
 
   if (!password) {
     errors.password = 'Required';
-  } else if (password.length < 5) {
-    errors.password = 'Password should be more than 5 characters long';
+  } else if (password.length < 6) {
+    errors.password = 'Password should be more than 6 characters long';
   }
   return errors;
 };
@@ -53,14 +57,18 @@ const LoginForm = () => {
   const classes = useStyles();
   const { login } = useAuth();
   const history = useHistory();
+  const [error, setError] = useState(null);
 
-  const handleLogin = (values, { setSubmitting }) => {
-    setTimeout(() => {
+  const handleLogin = async (values, { setSubmitting }) => {
+    const { email, password } = values;
+
+    try {
+      await login(email, password);
       setSubmitting(false);
-      login();
-      alert(JSON.stringify(values, null, 2));
       history.push('/');
-    }, 500);
+    } catch (err) {
+      setError(err);
+    }
   };
 
   return (
@@ -68,9 +76,10 @@ const LoginForm = () => {
       <Avatar className={classes.avatar}>
         <LockOutlinedIcon />
       </Avatar>
-      <Typography component="h1" variant="h5">
+      <Typography className={classes.title} component="h1" variant="h5">
         Sign in
       </Typography>
+      {error && <Alert severity="warning">{error.message}</Alert>}
       <Formik
         initialValues={INITIAL_FORM_VALUES}
         validate={validateForm}
@@ -79,12 +88,12 @@ const LoginForm = () => {
         {({ submitForm, isSubmitting, isValid }) => (
           <Form className={classes.form}>
             <Grid container direction="column" spacing={3}>
-              {FORM_INPUTS.map(({ name, label }) => (
+              {FORM_INPUTS.map(({ name, label, type }) => (
                 <Grid item key={name}>
                   <Field
                     component={TextField}
                     variant="outlined"
-                    type="text"
+                    type={type}
                     name={name}
                     label={label}
                     fullWidth

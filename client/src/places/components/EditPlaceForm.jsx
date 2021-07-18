@@ -75,7 +75,6 @@ const EditPlaceForm = ({ place }) => {
                     type="text"
                     name={name}
                     label={label}
-                    defaultValue={place[name]}
                     InputProps={{ notched: true }}
                     multiline={!!multiline}
                     rows={multiline && 4}

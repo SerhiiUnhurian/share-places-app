@@ -7,11 +7,14 @@ import {
   Typography,
 } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import Alert from '@material-ui/lab/Alert';
 import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-material-ui';
+import { useState } from 'react';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { useStyles } from '../../places/components/placeFormStyles';
 import Loading from '../../shared/components/Loading';
+import { useAuth } from '../../shared/context/AuthContext';
 
 const INITIAL_FORM_VALUES = {
   username: '',
@@ -24,18 +27,22 @@ const FORM_INPUTS = [
   {
     name: 'username',
     label: 'Username *',
+    type: 'text',
   },
   {
     name: 'email',
     label: 'Email *',
+    type: 'email',
   },
   {
     name: 'password',
     label: 'Password *',
+    type: 'password',
   },
   {
     name: 'passwordConfirm',
     label: 'Confirm Password *',
+    type: 'password',
   },
 ];
 
@@ -61,14 +68,14 @@ const validateForm = values => {
 
   if (!password) {
     errors.password = 'Required';
-  } else if (password.length < 5) {
-    errors.password = 'Password should be more than 5 characters long';
+  } else if (password.length < 6) {
+    errors.password = 'Password should be more than 6 characters long';
   }
 
   if (!passwordConfirm) {
     errors.passwordConfirm = 'Required';
-  } else if (password.length < 5) {
-    errors.passwordConfirm = 'Password should be more than 5 characters long';
+  } else if (password.length < 6) {
+    errors.passwordConfirm = 'Password should be more than 6 characters long';
   } else if (passwordConfirm !== password) {
     errors.passwordConfirm = 'Passwords do not match';
   }
@@ -79,13 +86,21 @@ const validateForm = values => {
 const RegistrationForm = () => {
   const classes = useStyles();
   const history = useHistory();
+  const { signUp } = useAuth();
+  const [error, setError] = useState(null);
 
-  const handleSignUp = (values, { setSubmitting }) => {
-    setTimeout(() => {
+  const handleSignUp = async (values, { setSubmitting }) => {
+    const { username, email, password } = values;
+
+    try {
+      setError(null);
+      const userCredential = await signUp(email, password);
+      userCredential.user.updateProfile({ displayName: username });
       setSubmitting(false);
-      alert(JSON.stringify(values, null, 2));
-      history.push('/login');
-    }, 500);
+      history.push('/');
+    } catch (err) {
+      setError(err);
+    }
   };
 
   return (
@@ -93,9 +108,10 @@ const RegistrationForm = () => {
       <Avatar className={classes.avatar}>
         <AccountCircleIcon />
       </Avatar>
-      <Typography component="h1" variant="h5">
+      <Typography className={classes.title} component="h1" variant="h5">
         Sign up
       </Typography>
+      {error && <Alert severity="warning">{error.message}</Alert>}
       <Formik
         initialValues={INITIAL_FORM_VALUES}
         validate={validateForm}
@@ -104,12 +120,12 @@ const RegistrationForm = () => {
         {({ submitForm, isSubmitting, isValid }) => (
           <Form className={classes.form}>
             <Grid container direction="column" spacing={3} alignItems="stretch">
-              {FORM_INPUTS.map(({ name, label }) => (
+              {FORM_INPUTS.map(({ name, label, type }) => (
                 <Grid item key={name}>
                   <Field
                     component={TextField}
                     variant="outlined"
-                    type="text"
+                    type={type}
                     name={name}
                     label={label}
                     fullWidth

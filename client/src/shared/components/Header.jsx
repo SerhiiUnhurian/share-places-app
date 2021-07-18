@@ -6,6 +6,7 @@ import Navigation from './Navigation';
 const useStyles = makeStyles(theme => ({
   brandname: {
     flexGrow: 1,
+    marginLeft: theme.spacing(2),
   },
 }));
 

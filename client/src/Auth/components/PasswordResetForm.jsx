@@ -7,11 +7,14 @@ import {
   Typography,
 } from '@material-ui/core';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import Alert from '@material-ui/lab/Alert';
 import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-material-ui';
+import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useStyles } from '../../places/components/placeFormStyles';
 import Loading from '../../shared/components/Loading';
+import { useAuth } from '../../shared/context/AuthContext';
 
 const validateForm = values => {
   const errors = {};
@@ -28,12 +31,21 @@ const validateForm = values => {
 
 const PasswordResetForm = () => {
   const classes = useStyles();
+  const { resetPassword } = useAuth();
+  const [error, setError] = useState(null);
+  const [message, setMessage] = useState(null);
 
-  const handlePasswordReset = (values, { setSubmitting }) => {
-    setTimeout(() => {
+  const handlePasswordReset = async (values, { setSubmitting }) => {
+    try {
+      setError(null);
+      setMessage(null);
+      await resetPassword(values.email);
       setSubmitting(false);
-      alert(JSON.stringify(values, null, 2));
-    }, 500);
+      setMessage('An email with instructions has been sent to your email.');
+      values.email = '';
+    } catch (err) {
+      setError(err);
+    }
   };
 
   return (
@@ -41,9 +53,11 @@ const PasswordResetForm = () => {
       <Avatar className={classes.avatar}>
         <VpnKeyIcon />
       </Avatar>
-      <Typography component="h1" variant="h5">
+      <Typography className={classes.title} component="h1" variant="h5">
         Password Reset
       </Typography>
+      {error && <Alert severity="warning">{error.message}</Alert>}
+      {message && <Alert severity="info">{message}</Alert>}
       <Formik
         initialValues={{ email: '' }}
         validate={validateForm}
