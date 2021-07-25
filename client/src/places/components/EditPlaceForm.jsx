@@ -25,7 +25,7 @@ const validateForm = values => {
   if (!title) {
     errors.title = 'Required';
   } else if (title.length < 5) {
-    errors.title = 'Title should be more than 3 characters long.';
+    errors.title = 'Title should be more than 4 characters long.';
   }
 
   return errors;

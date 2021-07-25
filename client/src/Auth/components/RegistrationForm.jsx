@@ -69,13 +69,13 @@ const validateForm = values => {
   if (!password) {
     errors.password = 'Required';
   } else if (password.length < 6) {
-    errors.password = 'Password should be more than 6 characters long';
+    errors.password = 'Password should be more than 5 characters long';
   }
 
   if (!passwordConfirm) {
     errors.passwordConfirm = 'Required';
   } else if (password.length < 6) {
-    errors.passwordConfirm = 'Password should be more than 6 characters long';
+    errors.passwordConfirm = 'Password should be more than 5 characters long';
   } else if (passwordConfirm !== password) {
     errors.passwordConfirm = 'Passwords do not match';
   }
