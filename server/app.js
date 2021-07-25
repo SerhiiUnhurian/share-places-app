@@ -1,7 +1,8 @@
 require('dotenv').config();
 const express = require('express');
-const HttpError = require('./models/httpError');
+const mongoose = require('mongoose');
 
+const HttpError = require('./models/httpError');
 const placesRoutes = require('./routes/placesRoutes');
 const usersRoutes = require('./routes/usersRoutes');
 
@@ -27,6 +28,18 @@ app.use((error, req, res, next) => {
     .json({ message: error.message || 'An unknown error occurred.' });
 });
 
-app.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}`);
-});
+mongoose.connect(
+  `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/share_places_app?authSource=admin`,
+  { useNewUrlParser: true, useUnifiedTopology: true },
+  err => {
+    if (err) {
+      console.error('FAILED TO CONNECT TO MONGODB');
+      console.error(err);
+    } else {
+      console.log('CONNECTED TO MONGODB!!');
+      app.listen(port, () => {
+        console.log(`Listening at http://localhost:${port}`);
+      });
+    }
+  }
+);
