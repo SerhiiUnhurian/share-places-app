@@ -1,12 +1,21 @@
+require('dotenv').config();
 const express = require('express');
-const bodyParser = require('body-parser');
+const HttpError = require('./models/httpError');
 
-const placesRoutes = require('./routes/places');
+const placesRoutes = require('./routes/placesRoutes');
+const usersRoutes = require('./routes/usersRoutes');
 
 const app = express();
 const port = process.env.PORT || 5000;
 
+app.use(express.json());
+
 app.use('/api/places', placesRoutes);
+app.use('/api/users', usersRoutes);
+
+app.use((req, res, next) => {
+  next(new HttpError('Bad request', 400));
+});
 
 app.use((error, req, res, next) => {
   if (res.headerSent) {
